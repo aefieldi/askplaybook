@@ -154,6 +154,21 @@ h2 .script{display:inline}
 .avoid b{font-weight:600}
 .follow{margin-top:14px;font-size:14px;color:var(--mint);background:none;border:0;cursor:pointer;padding:0;text-decoration:underline;text-underline-offset:3px;align-self:flex-start}
 
+.length{display:flex;flex-wrap:wrap;gap:10px 14px;align-items:center;margin:0 0 28px;padding:16px 20px;border:1px solid var(--line);border-radius:20px;background:var(--card)}
+.length .label{margin-right:4px}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{font-family:var(--mono);font-size:14px;border:1px solid var(--line);background:transparent;border-radius:999px;padding:8px 14px;cursor:pointer;font-variant-numeric:tabular-nums}
+.chip:hover{border-color:var(--lav)}
+.chip.on{background:#ece7f6;color:#14112a;border-color:#ece7f6}
+.length .own{display:flex;align-items:center;gap:8px;color:var(--dim);font-size:15px}
+.length input{width:84px;font-family:var(--mono);font-size:16px;background:var(--bg);border:1px solid var(--line);border-radius:12px;padding:8px 10px;color:var(--text);text-align:right}
+.length input:focus{outline:2px solid var(--mint);outline-offset:1px;border-color:transparent}
+.qgroups{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+.qgroup{background:var(--card);border:1px solid var(--line);border-radius:22px;padding:24px 26px;display:flex;flex-direction:column}
+.qgroup .when{color:var(--dim);font-size:15px;margin:6px 0 4px}
+.qgroup ul{list-style:none;margin:8px 0 18px;padding:0}
+.qgroup li{font-family:var(--serif);font-style:italic;font-weight:500;font-size:21px;line-height:1.4;padding:10px 0 10px 18px;border-left:2px solid var(--lav);margin-bottom:8px}
+
 /* tracker */
 .logs{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:28px}
 .log{border-radius:18px;border:1px solid var(--line);background:var(--card);padding:16px 20px;cursor:pointer;text-align:left;min-width:200px;flex:1}
@@ -210,7 +225,7 @@ h2 .script{display:inline}
 }
 @media (max-width:720px){
   .main{padding:40px 20px 90px}
-  .cols,.scripts,.doors,.row2{grid-template-columns:1fr}
+  .cols,.scripts,.doors,.row2,.qgroups{grid-template-columns:1fr}
   .w1,.w2,.w3,.w4{width:100%}
   .stage-card{padding:18px 22px}
   .stage-head{grid-template-columns:1fr auto;padding:16px 18px}
@@ -251,6 +266,8 @@ const EXAMPLE = {
   covers: "We get clear on what you're here to do, clear what's in the way, and build a practice you trust.",
   start: "next week",
   session: "reading",
+  clarityMin: 20,
+  sessionMin: 90,
   edited: false
 };
 
@@ -289,33 +306,53 @@ function scripts(c){
 }
 
 const m = (x) => x * 60;
+const clamp = (n, lo, hi) => Math.min(hi, Math.max(lo, Math.round(Number(n) || lo)));
+
+/* Stretch or shrink a call to the length they set. Every part keeps its share of the
+   call, lands on a whole minute, and gets at least one minute. */
+function cuts(baseEnds, total){
+  const n = baseEnds.length, baseTotal = baseEnds[n - 1];
+  let prev = 0;
+  return baseEnds.map((e, i) => {
+    let x = i === n - 1 ? total : Math.round(e / baseTotal * total);
+    x = Math.max(prev + 1, Math.min(x, total - (n - 1 - i)));
+    prev = x; return x;
+  });
+}
+const timed = (b, parts) => parts.map((s, i) => ({ ...s, start: m(i ? b[i - 1] : 0), end: m(b[i]) }));
+const CLARITY_BASE = [1, 5, 8, 11, 12, 17, 20];
+const SESSION_BASE = [5, 12, 22, 42, 47, 70, 77, 87, 90];
+const clarityLen = (c) => clamp(c.clarityMin, 10, 60);
+const sessionLen = (c) => clamp(c.sessionMin, 30, 180);
 
 function clarityStages(c){
   const L = lines(c);
-  return [
-    { start: 0, end: 60, title: "Rapport", goal: "Warm and quick. Get to the point.", say: ["Can you see me okay? Can you hear me okay? Great. I'm looking over your application, but I'd love to hear it from you."] },
-    { start: 60, end: m(5), title: "The problem", goal: "Let them talk. Go one question deeper on whatever they say before moving on.", say: ["What specifically is going on right now that made you want to book this call?", "How long has this been going on?", "What have you already tried?"], avoid: "Doing a mini " + L.S + ". That's why these run long." },
-    { start: m(5), end: m(8), title: "The cost", goal: "Let them feel it. Don't rush to fix it.", say: ["How does it feel to be in this situation?", "What's it costing you to not have this clarity?"] },
-    { start: m(8), end: m(11), title: "The vision", goal: "Write down their exact words. You'll say them back.", say: ["Tell me your vision for the next 6 to 12 months. If this was solved, what would be different?"] },
-    { start: m(11), end: m(12), title: "The ask", goal: "Ask by minute 12, so it happens even if they have to leave at 15.", say: ["Okay, great. That's definitely something I can help you with. Do you want to keep figuring this out on your own, or would you like to hear what it would be like to work together?"] },
-    { start: m(12), end: m(17), title: "The offer", goal: "Say the price once, clearly. Handle one objection (see What to say).", say: [L.OFFER, "(Stop talking. Let them answer.)"], avoid: "\"No pressure.\" \"I'll send you some info.\"" },
-    { start: m(17), end: m(20), title: "The close", goal: "Yes or not yet. Hard stop at 20:00.", say: ["Yes: " + L.YES, "Not yet: Totally okay. Thank you for being so open with me today."] }
-  ];
+  const T = clarityLen(c), b = cuts(CLARITY_BASE, T);
+  return timed(b, [
+    { title: "Rapport", goal: "Warm and quick. Get to the point.", say: ["Can you see me okay? Can you hear me okay? Great. I'm looking over your application, but I'd love to hear it from you."] },
+    { title: "The problem", goal: "Let them talk. Go one question deeper on whatever they say before moving on.", say: ["What specifically is going on right now that made you want to book this call?", "How long has this been going on?", "What have you already tried?"], avoid: "Doing a mini " + L.S + ". That's why these run long." },
+    { title: "The cost", goal: "Let them feel it. Don't rush to fix it.", say: ["How does it feel to be in this situation?", "What's it costing you to not have this clarity?"] },
+    { title: "The vision", goal: "Write down their exact words. You'll say them back.", say: ["Tell me your vision for the next 6 to 12 months. If this was solved, what would be different?"] },
+    { title: "The ask", goal: "Ask by minute " + b[4] + ", so it happens even if they have to leave early.", say: ["Okay, great. That's definitely something I can help you with. Do you want to keep figuring this out on your own, or would you like to hear what it would be like to work together?"] },
+    { title: "The offer", goal: "Say the price once, clearly. Handle one objection (see What to say).", say: [L.OFFER, "(Stop talking. Let them answer.)"], avoid: "\"No pressure.\" \"I'll send you some info.\"" },
+    { title: "The close", goal: "Yes or not yet. Hard stop at " + fmt(m(T)) + ".", say: ["Yes: " + L.YES, "Not yet: Totally okay. Thank you for being so open with me today."] }
+  ]);
 }
 
 function sessionStages(c){
   const L = lines(c);
-  return [
-    { start: 0, end: m(5), title: "Welcome", goal: "Set expectations with confidence.", say: ["I'm so glad you're here. Here's how today works: we'll talk for a few minutes, I'll do the " + L.S + ", and then I'll share everything that came through. Some of it may be symbolic, so take what resonates."], avoid: "Apologizing for being new, being woo woo, or not getting it right." },
-    { start: m(5), end: m(12), title: "Intake", goal: "Get the problem and the vision. You need both for the ask.", say: ["If today did exactly what you hoped, what would you walk away clear on?", "Is there a question you've been nervous to ask out loud?", "And if six to twelve months from now this all felt resolved, what would be different?"], avoid: "Skipping the vision question. It's your bridge at minute 77, so write their answer down." },
-    { start: m(12), end: m(22), title: "Your opening", goal: "Your grounding, prayer or ritual. Keep it exactly the way you do it.", say: ["(Your opening, your way.)"] },
-    { start: m(22), end: m(42), title: "The " + L.S, goal: "Hard cap at 20 minutes. Set a quiet alarm before you start.", say: ["(The work itself.)"], avoid: "Going past 42:00. Every extra minute here comes out of the ask." },
-    { start: m(42), end: m(47), title: "Return", goal: "Bring them back and let them share first.", say: ["How are you feeling? Is there anything you want to share before I get into what I got for you?"] },
-    { start: m(47), end: m(70), title: "Deliver the " + L.S, goal: "Tie every piece back to what they asked for at the start.", say: ["You asked about [their question]. Here's what came through."], avoid: "Long background teaching. Two minutes max. The follow-up email can go deeper." },
-    { start: m(70), end: m(77), title: "Their questions", goal: "When they ask what to do next, that's a raised hand. Bridge, don't hand over the roadmap.", say: [L.BRIDGE], avoid: "Giving the full five-minute plan for free. One tip, max." },
-    { start: m(77), end: m(87), title: "Bridge, ask, offer", goal: "Use their vision from the intake. Then ask. Then stop talking.", say: ["I know we covered a lot today. At the start you told me you wanted [their vision]. Do you want to keep figuring this out on your own, or would you like some help with it?", L.OFFER, "(Stop talking. Let them answer.)"], avoid: "\"No pressure.\" \"I'll send you some links.\"" },
-    { start: m(87), end: m(90), title: "Close", goal: "Get the decision on the call.", say: ["Yes: " + L.YES, "Not yet: Totally okay. Thank you for trusting me with this today."] }
-  ];
+  const T = sessionLen(c), b = cuts(SESSION_BASE, T);
+  return timed(b, [
+    { title: "Welcome", goal: "Set expectations with confidence.", say: ["I'm so glad you're here. Here's how today works: we'll talk for a few minutes, I'll do the " + L.S + ", and then I'll share everything that came through. Some of it may be symbolic, so take what resonates."], avoid: "Apologizing for being new, being woo woo, or not getting it right." },
+    { title: "Intake", goal: "Get the problem and the vision. You need both for the ask.", say: ["If today did exactly what you hoped, what would you walk away clear on?", "Is there a question you've been nervous to ask out loud?", "And if six to twelve months from now this all felt resolved, what would be different?"], avoid: "Skipping the vision question. It's your bridge at minute " + b[6] + ", so write their answer down." },
+    { title: "Your opening", goal: "Your grounding, prayer or ritual. Keep it exactly the way you do it.", say: ["(Your opening, your way.)"] },
+    { title: "The " + L.S, goal: "Hard cap at " + (b[3] - b[2]) + " minutes. Set a quiet alarm before you start.", say: ["(The work itself.)"], avoid: "Going past " + fmt(m(b[3])) + ". Every extra minute here comes out of the ask." },
+    { title: "Return", goal: "Bring them back and let them share first.", say: ["How are you feeling? Is there anything you want to share before I get into what I got for you?"] },
+    { title: "Deliver the " + L.S, goal: "Tie every piece back to what they asked for at the start.", say: ["You asked about [their question]. Here's what came through."], avoid: "Long background teaching. Two minutes max. The follow-up email can go deeper." },
+    { title: "Their questions", goal: "When they ask what to do next, that's a raised hand. Bridge, don't hand over the roadmap.", say: [L.BRIDGE], avoid: "Giving the full five-minute plan for free. One tip, max." },
+    { title: "Bridge, ask, offer", goal: "Use their vision from the intake. Then ask. Then stop talking.", say: ["I know we covered a lot today. At the start you told me you wanted [their vision]. Do you want to keep figuring this out on your own, or would you like some help with it?", L.OFFER, "(Stop talking. Let them answer.)"], avoid: "\"No pressure.\" \"I'll send you some links.\"" },
+    { title: "Close", goal: "Get the decision on the call.", say: ["Yes: " + L.YES, "Not yet: Totally okay. Thank you for trusting me with this today."] }
+  ]);
 }
 
 function auditStages(c){
@@ -330,6 +367,15 @@ function auditStages(c){
     { start: m(55), end: m(60), title: "Close", goal: "Link sent and first session booked, or a kind not yet.", say: ["Yes: " + L.YES, "Not yet: Totally okay. You'll have your written plan from me either way."] }
   ];
 }
+
+const AUDIT_QS = [
+  { part: "Open", when: "First two minutes", qs: ["What made you want to book this call with me today?", "I read your intake. What's changed since you filled it out?", "What would make this call a win for you?"] },
+  { part: "The problem", when: "Go one question deeper on every answer", qs: ["What's going on right now, in your own words?", "How long has it been like this?", "What have you already tried, and what happened?", "What do you think is really in the way?"] },
+  { part: "The cost", when: "Let them feel it. Don't rush to fix it", qs: ["What is this costing you right now: money, time, energy?", "What happens if nothing changes in the next six months?"] },
+  { part: "The vision", when: "Write down their exact words", qs: ["Where do you want to be 6 to 12 months from now?", "If this was solved, what would be different about your days?", "Why now?"] },
+  { part: "The audit", when: "Before you name the three things", qs: ["Do you want to hear what I'm seeing?", "These are the three things I'd focus on. Which one do you want to dive into right now?", "Does that match what you were feeling, or is it something different?"] },
+  { part: "The decision", when: "Then stop talking", qs: ["Do you want to do this all by yourself, or do you want to hear what it would be like to work together?", "If money weren't a factor, is this something you'd want to do?", "Is anyone else part of this decision?"] }
+];
 
 const LEAKS = [
   { h: "I mentioned the offer. I never asked.", p: "\"No pressure, that's also something I offer\" isn't an ask. No price, no question, no decision. \"I'll look into it\" is a maybe, and a maybe held is a no that costs money.", fix: "Say the ask at the end of every call, word for word, until it's yours." },
@@ -460,6 +506,23 @@ function Score({ s, setS, c }){
         <p className="big">"${L.ASK}"</p>
         <p>Say this at the end of every call. Every one. If you ask on 8 of your next 10 calls and 2 say yes, that's ${money(2 * c.price)}${c.billing === 'monthly' ? ' a month' : ''} from calls you're already doing.</p>
       </div>
+    </div>`;
+}
+
+function LengthPicker({ id, label, value, options, min, max, onChange }){
+  const [draft, setDraft] = useState(String(value));
+  useEffect(() => setDraft(String(value)), [value]);
+  const commit = () => { const v = clamp(draft, min, max); setDraft(String(v)); onChange(v); };
+  return html`
+    <div className="length">
+      <span className="label dim">${label}</span>
+      <div className="chips">
+        ${options.map(o => html`<button key=${o} className=${'chip' + (value === o ? ' on' : '')} aria-pressed=${value === o} onClick=${() => onChange(o)}>${o} min</button>`)}
+      </div>
+      <label className="own" htmlFor=${id}>or
+        <input id=${id} type="number" min=${min} max=${max} inputMode="numeric" value=${draft} onChange=${e => setDraft(e.target.value)} onBlur=${commit} onKeyDown=${e => { if (e.key === 'Enter') commit(); }} />
+        minutes
+      </label>
     </div>`;
 }
 
@@ -608,11 +671,14 @@ function App(){
   };
   const L = lines(c);
   const low = Math.round(t.booked * 0.2), high = Math.round(t.booked * 0.3);
+  const cT = clarityLen(c), cB = cuts(CLARITY_BASE, cT);
+  const sT = sessionLen(c), sB = cuts(SESSION_BASE, sT);
+  const setLen = (k) => (v) => setC(p => ({ ...p, [k]: v }));
 
   const hero = [
     { id: 'setup', n: '01', t: 'Your offer', tag: 'Start here', w: 'w1' },
-    { id: 'clarity', n: '02', t: 'Clarity call', tag: '20 min', w: 'w2' },
-    { id: 'session', n: '03', t: 'Paid ' + L.S, tag: '90 min', w: 'w3' },
+    { id: 'clarity', n: '02', t: 'Clarity call', tag: cT + ' min', w: 'w2' },
+    { id: 'session', n: '03', t: 'Paid ' + L.S, tag: sT + ' min', w: 'w3' },
     { id: 'audit', n: '04', t: 'Audit call', tag: '60 min', w: 'w4' }
   ];
 
@@ -679,17 +745,19 @@ function App(){
       </section>
 
       <section hidden=${tab !== 'clarity'}>
-        <p className="label pink">Booked for 15, runs to 20</p>
+        <p className="label pink">${cT} minutes, free</p>
         <h2>The clarity <span className="script">call.</span></h2>
-        <p className="sub">Hit start when they join. The panel follows the clock and shows you what to say next. No free ${L.S}s on these calls. The ask happens by minute 12, every time.</p>
-        <${CallTimer} stages=${clarityStages(c)} total=${m(20)} softStop=${m(15)} softLabel="BOOKED END" />
+        <p className="sub">Hit start when they join. The panel follows the clock and shows you what to say next. No free ${L.S}s on these calls. The ask happens by minute ${cB[4]}, every time.</p>
+        <${LengthPicker} id="len-clarity" label="How long is your call?" value=${cT} options=${[15, 20, 30, 45]} min=${10} max=${60} onChange=${setLen('clarityMin')} />
+        <${CallTimer} stages=${clarityStages(c)} total=${m(cT)} softStop=${m(cB[3])} softLabel="THE ASK" />
       </section>
 
       <section hidden=${tab !== 'session'}>
-        <p className="label pink">90 minutes, paid</p>
+        <p className="label pink">${sT} minutes, paid</p>
         <h2>The paid <span className="script">${L.S}.</span></h2>
-        <p className="sub">Same ${L.S} you already give. Two changes: a hard cap on the work itself, and ten protected minutes at the end for the ask.</p>
-        <${CallTimer} stages=${sessionStages(c)} total=${m(90)} softStop=${m(77)} softLabel="THE ASK" />
+        <p className="sub">Same ${L.S} you already give. Two changes: a hard cap of ${sB[3] - sB[2]} minutes on the work itself, and ${sB[7] - sB[6]} protected minutes at the end for the ask.</p>
+        <${LengthPicker} id="len-session" label=${'How long is your ' + L.S + '?'} value=${sT} options=${[45, 60, 75, 90, 120]} min=${30} max=${180} onChange=${setLen('sessionMin')} />
+        <${CallTimer} stages=${sessionStages(c)} total=${m(sT)} softStop=${m(sB[6])} softLabel="THE ASK" />
       </section>
 
       <section hidden=${tab !== 'audit'}>
@@ -697,6 +765,27 @@ function App(){
         <h2>The audit <span className="script">call.</span></h2>
         <p className="sub">A paid call with real value that ends in an invitation. They fill out an intake, you review it before the call, you name three things, and you solve one of them completely.</p>
         <${CallTimer} stages=${auditStages(c)} total=${m(60)} softStop=${m(45)} softLabel="THE ASK" />
+
+        <div className="block">
+          <p className="label mint">Pick two or three per part, not all of them</p>
+          <h3>Questions to ask on an audit call</h3>
+          <p>Ask one, then wait. Go deeper on what they actually said before you move to the next one.</p>
+          <div className="qgroups">
+            ${AUDIT_QS.map((g, i) => html`
+              <div key=${i} className="qgroup">
+                <p className="label pink">${g.part}</p>
+                <p className="when">${g.when}</p>
+                <ul>${g.qs.map((q, j) => html`<li key=${j}>${q}</li>`)}</ul>
+                <${CopyBtn} text=${g.qs.join('\n')} />
+              </div>`)}
+          </div>
+        </div>
+
+        <div className="block">
+          <p className="label mint">After the call</p>
+          <h3>The written plan they leave with</h3>
+          <p>Every audit ends with a document: where they are, where they want to go, the three things you named, and their next steps in order. The Audit Call Doc skill builds it from their intake form, and fills in the rest from your call transcript. It sits next to this playbook in the classroom.</p>
+        </div>
       </section>
 
       <section hidden=${tab !== 'tracker'}>
@@ -719,10 +808,10 @@ function App(){
 
         <div className="block">
           <p className="label mint">After this batch</p>
-          <h3>Retire the free 15-minute call</h3>
-          <p>Fifteen free minutes isn't enough time to sell a program at ${priceShort(c)}, and those slots eat the time you need for paid work. Once the booked ones are done, there are two ways in:</p>
+          <h3>Retire the free ${cT}-minute call</h3>
+          <p>A free ${cT}-minute call isn't enough time to sell a program at ${priceShort(c)}, and those slots eat the time you need for paid work. Once the booked ones are done, there are two ways in:</p>
           <div className="doors">
-            <div className="door"><p className="label gold">Paid · 90 min</p><h4>The ${L.S}</h4><p>Exactly what you do now, and it always ends with the ask.</p></div>
+            <div className="door"><p className="label gold">Paid · ${sT} min</p><h4>The ${L.S}</h4><p>Exactly what you do now, and it always ends with the ask.</p></div>
             <div className="door"><p className="label gold">Paid · 60 min</p><h4>The audit call</h4><p>A sales call with real value: three things named, one solved, then the invitation. Price it so only serious people book.</p></div>
           </div>
         </div>
