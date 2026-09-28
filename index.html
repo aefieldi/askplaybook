@@ -392,6 +392,58 @@ const KEEPS = [
   { h: "I made them feel safe.", p: "Consent and clear expectations before you go in. Safe is what makes a yes possible." }
 ];
 
+/* ---------- before the call: the application and the pre-call video ---------- */
+function application(c){
+  const L = lines(c);
+  return [
+    { q: "What's going on right now that made you want to book?", why: "Their problem, in their words. It's your first question on the call." },
+    { q: "How long has this been going on?", why: "Tells you how ready they are to change it." },
+    { q: "What have you already tried?", why: "So you never offer them something that already didn't work." },
+    { q: "Where do you want to be 6 to 12 months from now?", why: "Their vision. You say it back right before the ask." },
+    { q: L.name + " is " + c.length + ", " + priceShort(c) + ". If it's the right fit, are you in a position to invest?", opts: "Yes · Yes, with a plan · Not right now", why: "Nobody is surprised by the price on the call." },
+    { q: "Is anyone else part of this decision?", why: "If yes, you know before the call, not at the close." },
+    { q: "Did you watch the full video?", opts: "Yes · No", why: "Only if you have a pre-call video. If not, leave this one off." }
+  ];
+}
+
+function videoSigns(c){
+  return [
+    { h: "My call is free.", p: "When nobody pays to book, the video is the filter." },
+    { h: "People get on the call not knowing my price.", p: "The video says the range first, so the call is never the first time they hear it." },
+    { h: "I explain who I am and how I work on every call.", p: "Say it once on video and get those minutes back for their problem." },
+    { h: "People book and don't show up.", p: "Someone who watched five minutes of you is far more likely to come." },
+    { h: "My offer is " + money(1000) + " or more.", p: "Yours is " + priceShort(c) + ". The bigger the decision, the more they need to know you before the call." }
+  ];
+}
+
+function VideoCheck({ v, setV, c }){
+  const signs = videoSigns(c);
+  const flip = (k) => setV(p => ({ ...p, [k]: !p[k] }));
+  const n = signs.filter((_, i) => v['v' + i]).length;
+  const verdict = n >= 2
+    ? { v: 'Make the video', p: 'Under five minutes, one take, on your booking page above the application. The outline is right below.' }
+    : n === 1
+      ? { v: 'Nice to have', p: 'Your application can carry this for now. Make the video when a second one becomes true.' }
+      : { v: 'Skip it for now', p: 'If your call is paid and people already know your price, the payment is the filter. Put your energy into the ask.' };
+  return html`
+    <div className="cols">
+      <div>
+        ${signs.map((w, i) => html`
+          <button key=${i} className="tick keep" aria-pressed=${!!v['v' + i]} onClick=${() => flip('v' + i)}>
+            <span className="box" aria-hidden="true"></span>
+            <span><h3>${w.h}</h3><p>${w.p}</p></span>
+          </button>`)}
+      </div>
+      <div>
+        <div className="verdict" style=${{ marginTop: '14px' }}>
+          <p className="label gold">${n} of 5 true for you</p>
+          <div className="v">${verdict.v}</div>
+          <p>${verdict.p}</p>
+        </div>
+      </div>
+    </div>`;
+}
+
 function fmt(s){
   const neg = s < 0; s = Math.abs(Math.floor(s));
   const mm = Math.floor(s / 60), ss = s % 60;
@@ -664,13 +716,14 @@ function App(){
   useEffect(() => store.set('offer', c), [c]);
   useEffect(() => store.set('score', s), [s]);
   useEffect(() => store.set('tracker', t), [t]);
+  const [v, setV] = useState(() => store.get('video', {}));
+  useEffect(() => store.set('video', v), [v]);
 
   const go = (id) => {
     setTab(id);
     requestAnimationFrame(() => { const el = document.getElementById('content'); if (el) el.scrollIntoView({ behavior: reduceMotion() ? 'auto' : 'smooth', block: 'start' }); });
   };
   const L = lines(c);
-  const low = Math.round(t.booked * 0.2), high = Math.round(t.booked * 0.3);
   const cT = clarityLen(c), cB = cuts(CLARITY_BASE, cT);
   const sT = sessionLen(c), sB = cuts(SESSION_BASE, sT);
   const setLen = (k) => (v) => setC(p => ({ ...p, [k]: v }));
@@ -796,30 +849,31 @@ function App(){
       </section>
 
       <section hidden=${tab !== 'forward'}>
-        <p className="label pink">The plan</p>
-        <h2>Where you go <span className="script">from here.</span></h2>
+        <p className="label pink">Before they ever get on the call</p>
+        <h2>The right people <span className="script">on your calendar.</span></h2>
+        <p className="sub">Two things decide who shows up: what you ask before they book, and what they watch before they book. Set these up once and every call going forward starts warmer.</p>
 
-        <div className="block">
-          <p className="label mint">Right now</p>
-          <h3>Make the most of the calendar</h3>
-          <p>Whatever is already booked, keep it. Every one of those calls now ends with the ask.</p>
-          <p className="goal-line">With ${t.booked} calls booked, 20–30% is ${low}–${high} new clients in ${L.name}, or ${money(low * c.price)}–${money(high * c.price)}${c.billing === 'monthly' ? ' a month' : ''}.</p>
+        <div className="block" style=${{ marginTop: 0 }}>
+          <p className="label mint">Step one · the application</p>
+          <h3>What goes on your application</h3>
+          <p>Seven questions, all required. Read their answers before the call, because every answer is a line you get to say back to them.</p>
+          <ol className="qs">
+            ${application(c).map((a, i) => html`<li key=${i}><div>${a.q}${a.opts ? html`<em>${a.opts}</em>` : null}<em>${a.why}</em></div></li>`)}
+          </ol>
+          <div style=${{ marginTop: '18px' }}><${CopyBtn} text=${application(c).map((a, i) => (i + 1) + '. ' + a.q + (a.opts ? ' (' + a.opts + ')' : '')).join('\n')} /></div>
         </div>
 
         <div className="block">
-          <p className="label mint">After this batch</p>
-          <h3>Retire the free ${cT}-minute call</h3>
-          <p>A free ${cT}-minute call isn't enough time to sell a program at ${priceShort(c)}, and those slots eat the time you need for paid work. Once the booked ones are done, there are two ways in:</p>
-          <div className="doors">
-            <div className="door"><p className="label gold">Paid · ${sT} min</p><h4>The ${L.S}</h4><p>Exactly what you do now, and it always ends with the ask.</p></div>
-            <div className="door"><p className="label gold">Paid · 60 min</p><h4>The audit call</h4><p>A sales call with real value: three things named, one solved, then the invitation. Price it so only serious people book.</p></div>
-          </div>
+          <p className="label mint">Step two · the pre-call video</p>
+          <h3>Do you need a pre-call video?</h3>
+          <p>Not everyone does. Tick what's true for you right now.</p>
+          <${VideoCheck} v=${v} setV=${setV} c=${c} />
         </div>
 
         <div className="block">
-          <p className="label mint">Under 5 minutes</p>
-          <h3>The pre-call video</h3>
-          <p>People watch this before they can book. It does the warming up, so the call can do the deciding.</p>
+          <p className="label mint">Under 5 minutes · one take</p>
+          <h3>What to say in the video</h3>
+          <p>It goes on your booking page, above the application. It does the warming up, so the call can do the deciding.</p>
           <ul className="flow">
             <li><span className="tm">0:00–0:30</span><div><b>Who this is for</b><span>Name the person and the pull they feel, in their words.</span></div></li>
             <li><span className="tm">0:30–1:30</span><div><b>Your story</b><span>What you did before, how you found this work. Real and specific.</span></div></li>
@@ -828,20 +882,6 @@ function App(){
             <li><span className="tm">4:00–4:30</span><div><b>The investment</b><span>Say the price range so nobody's surprised on the call.</span></div></li>
             <li><span className="tm">4:30–end</span><div><b>The invitation</b><span>If that's a yes, fill out the application below.</span></div></li>
           </ul>
-        </div>
-
-        <div className="block">
-          <p className="label mint">The application</p>
-          <h3>Qualifying questions</h3>
-          <ol className="qs">
-            <li><div>What's going on right now that made you want to book?</div></li>
-            <li><div>How long has this been going on?</div></li>
-            <li><div>What have you already tried?</div></li>
-            <li><div>Where do you want to be 6 to 12 months from now?</div></li>
-            <li><div>${L.name} is ${c.length}, ${priceShort(c)}. If it's the right fit, are you in a position to invest?<em>Yes · Yes, with a plan · Not right now</em></div></li>
-            <li><div>Did you watch the full video?<em>Yes · No</em></div></li>
-            <li><div>Is anyone else part of this decision?</div></li>
-          </ol>
         </div>
       </section>
 
