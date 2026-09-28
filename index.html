@@ -1,0 +1,773 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>The Ask Playbook</title>
+<meta name="description" content="A live call companion for readers, healers and coaches: put your offer in once and every script, call timer and enrollment target fills in with your words.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@1,500;1,600&family=DM+Mono:wght@400;500&family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+/* Single night-sky theme, painted explicitly. Same system as the client call playbooks. */
+:root{
+  --bg:#0d0c19; --card:#1c1a2f; --card-2:#24203b; --line:#35304f; --line-soft:#26223c;
+  --text:#f0ebf8; --muted:#b0aac6; --dim:#8d87ad;
+  --lav:#b89bf0; --orchid:#e2a6de; --gold:#d9c06c; --mint:#7fdfc3; --pink:#e6a2e2;
+  --sans:"Outfit",ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif;
+  --serif:"Cormorant Garamond",Georgia,"Times New Roman",serif;
+  --mono:"DM Mono",ui-monospace,SFMono-Regular,Menlo,monospace;
+  color-scheme:dark;
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px);
+  padding-bottom:env(safe-area-inset-bottom,0px);
+}
+html{scroll-padding-top:calc(env(safe-area-inset-top,0px) + 76px);background:var(--bg)}
+*,*::before,*::after{box-sizing:inherit}
+body{margin:0;background:var(--bg);background-image:radial-gradient(1100px 620px at -5% -10%,#221a3c 0%,transparent 62%);color:var(--text);font-family:var(--sans);font-size:17px;font-weight:300;line-height:1.6;-webkit-font-smoothing:antialiased}
+button,input,textarea,select{font:inherit;color:inherit}
+h1,h2,h3,h4{text-wrap:balance}
+:focus-visible{outline:2px solid var(--mint);outline-offset:3px;border-radius:12px}
+img{max-width:100%}
+a{color:var(--mint)}
+
+/* hero */
+.hero{display:grid;grid-template-columns:1.12fr .88fr;gap:56px;max-width:1240px;margin:0 auto;padding:44px 32px 64px;align-items:center}
+.eyebrow{font-family:var(--mono);font-size:13px;letter-spacing:.32em;color:var(--pink);text-transform:uppercase;margin:0}
+h1{font-weight:800;font-size:clamp(48px,8vw,104px);line-height:.95;letter-spacing:-.035em;margin:28px 0 0}
+.script{display:block;font-family:var(--serif);font-style:italic;font-weight:600;letter-spacing:-.01em;background:linear-gradient(90deg,var(--lav),var(--orchid));-webkit-background-clip:text;background-clip:text;color:transparent;line-height:1.08;padding-bottom:.08em}
+.tagline{font-family:var(--serif);font-style:italic;font-weight:500;color:var(--gold);font-size:clamp(28px,3.4vw,42px);margin:26px 0 16px;line-height:1.2}
+.lede{font-size:clamp(18px,1.7vw,22px);color:var(--muted);max-width:42ch;line-height:1.75;margin:0}
+.sig{margin-top:28px;font-size:16px;color:var(--dim);max-width:52ch}
+.sig b{color:var(--text);font-weight:600}
+.btns{display:flex;gap:14px;flex-wrap:wrap;margin-top:32px}
+.btn{font-weight:500;font-size:18px;border-radius:999px;padding:17px 30px;cursor:pointer;border:1px solid var(--line);background:transparent;text-decoration:none;color:var(--text);display:inline-block}
+.btn-primary{background:#ece7f6;color:#14112a;border-color:#ece7f6}
+.btn-ghost:hover{border-color:var(--lav)}
+.stack{display:flex;flex-direction:column;align-items:center;gap:22px}
+.stack-label{font-family:var(--mono);letter-spacing:.3em;font-size:13px;color:var(--dim);text-transform:uppercase;text-align:center;margin:0}
+.stack-label.end{color:var(--mint)}
+.stage-card{display:flex;justify-content:space-between;align-items:center;gap:16px;background:var(--card);border:1px solid var(--line);border-radius:26px;padding:20px 28px;text-align:left;cursor:pointer;transition:border-color .2s}
+.stage-card:hover{border-color:var(--lav)}
+.stage-card .n{font-family:var(--mono);color:var(--dim);font-size:15px;display:block}
+.stage-card .t{font-size:22px;font-weight:600;display:block;line-height:1.3}
+.stage-card .tag{font-family:var(--mono);color:var(--mint);letter-spacing:.14em;font-size:14px;white-space:nowrap}
+.w1{width:100%}.w2{width:92%}.w3{width:84%}.w4{width:76%}
+.connector{height:36px;border-left:1px dashed var(--line)}
+
+/* nav */
+.nav{position:sticky;top:env(safe-area-inset-top,0px);z-index:10;background:rgba(13,12,25,.92);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-top:1px solid var(--line-soft);border-bottom:1px solid var(--line-soft)}
+.nav-in{max-width:1240px;margin:0 auto;padding:10px 24px;display:flex;gap:6px;overflow-x:auto;scrollbar-width:none}
+.nav-in::-webkit-scrollbar{display:none}
+.pill{font-size:15px;font-weight:500;padding:10px 18px;border-radius:999px;border:1px solid transparent;background:none;color:var(--muted);white-space:nowrap;cursor:pointer}
+.pill:hover{color:var(--text)}
+.pill.on{background:var(--card-2);border-color:var(--line);color:var(--text)}
+
+/* main */
+.main{max-width:1240px;margin:0 auto;padding:52px 32px 110px}
+h2{font-weight:700;font-size:clamp(34px,4.6vw,58px);letter-spacing:-.03em;line-height:1.02;margin:14px 0 14px}
+h2 .script{display:inline}
+.sub{color:var(--muted);font-size:19px;max-width:64ch;margin:0 0 36px}
+.label{font-family:var(--mono);letter-spacing:.24em;font-size:13px;text-transform:uppercase;margin:0}
+.label.mint{color:var(--mint)} .label.pink{color:var(--pink)} .label.gold{color:var(--gold)} .label.dim{color:var(--dim)}
+
+/* setup */
+.setup{display:grid;grid-template-columns:1fr 1fr;gap:32px;align-items:start}
+.form{display:grid;gap:18px}
+.field{display:grid;gap:7px}
+.field input,.field textarea,.field select{font-weight:400;font-size:17px;color:var(--text);background:var(--card);border:1px solid var(--line);border-radius:14px;padding:12px 14px;width:100%}
+.field textarea{min-height:104px;resize:vertical;line-height:1.5}
+.field input:focus,.field textarea:focus,.field select:focus{outline:2px solid var(--mint);outline-offset:1px;border-color:transparent}
+.field small{color:var(--dim);font-size:14px;line-height:1.45}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.preview{position:sticky;top:calc(env(safe-area-inset-top,0px) + 84px);background:var(--card);border:1px solid var(--line);border-radius:26px;padding:28px}
+.badge{display:inline-block;font-family:var(--mono);font-size:12px;letter-spacing:.14em;text-transform:uppercase;border-radius:999px;padding:6px 12px;border:1px solid rgba(217,192,108,.5);color:var(--gold);margin-bottom:16px}
+.badge.ok{border-color:rgba(127,223,195,.5);color:var(--mint)}
+.preview .facts{margin:20px 0 0;padding:18px 0 0;border-top:1px solid var(--line-soft);display:grid;gap:8px;color:var(--muted);font-size:16px}
+.preview .facts b{color:var(--text);font-weight:600;font-family:var(--mono);font-variant-numeric:tabular-nums}
+.preview .row-btns{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-top:20px}
+
+/* score your last call */
+.cols{display:grid;grid-template-columns:1fr 1fr;gap:32px}
+.tick{display:flex;gap:16px;align-items:flex-start;width:100%;text-align:left;background:var(--card);border:1px solid var(--line);border-radius:20px;padding:20px 22px;margin-top:14px;cursor:pointer;transition:border-color .2s}
+.tick:hover{border-color:var(--lav)}
+.tick .box{flex:none;width:22px;height:22px;border-radius:7px;border:1.5px solid var(--dim);margin-top:4px;position:relative}
+.tick[aria-pressed="true"] .box::after{content:"";position:absolute;left:7px;top:2px;width:6px;height:12px;border-right:2px solid #14112a;border-bottom:2px solid #14112a;transform:rotate(42deg)}
+.tick.leak[aria-pressed="true"]{border-color:rgba(230,162,226,.6)}
+.tick.leak[aria-pressed="true"] .box{background:var(--pink);border-color:var(--pink)}
+.tick.keep[aria-pressed="true"]{border-color:rgba(127,223,195,.6)}
+.tick.keep[aria-pressed="true"] .box{background:var(--mint);border-color:var(--mint)}
+.tick h3{font-size:20px;font-weight:600;margin:0 0 6px;line-height:1.35}
+.tick p{margin:0;color:var(--muted);font-size:17px}
+.q{font-family:var(--serif);font-style:italic;font-weight:500;font-size:21px;color:var(--text)}
+.verdict{margin-top:28px;background:var(--card-2);border:1px solid var(--line);border-radius:22px;padding:24px 26px}
+.verdict .v{font-family:var(--mono);font-size:34px;margin:8px 0 6px;font-variant-numeric:tabular-nums}
+.verdict p{margin:0;color:var(--muted)}
+.receipt{margin:0 0 30px;border-left:2px solid var(--gold);padding:4px 0 4px 20px;color:var(--muted);max-width:64ch}
+.receipt b{color:var(--text);font-weight:600}
+
+.callout{margin-top:40px;border:1px solid rgba(217,192,108,.45);background:linear-gradient(135deg,rgba(217,192,108,.08),rgba(184,155,240,.06));border-radius:28px;padding:34px 36px}
+.callout .big{font-family:var(--serif);font-style:italic;font-weight:500;font-size:clamp(26px,3vw,36px);color:var(--gold);line-height:1.3;margin:12px 0 10px}
+.callout p{color:var(--muted);margin:0;font-size:17px}
+
+.scripts{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+.script-card{background:var(--card);border:1px solid var(--line);border-radius:22px;padding:24px 26px;display:flex;flex-direction:column}
+.say{font-family:var(--serif);font-style:italic;font-weight:500;font-size:23px;line-height:1.4;color:var(--text);margin:12px 0 12px}
+.note{color:var(--dim);font-size:15px;margin:0 0 16px}
+.copy{align-self:flex-start;margin-top:auto;font-family:var(--mono);font-size:13px;letter-spacing:.14em;text-transform:uppercase;border:1px solid var(--line);background:transparent;border-radius:999px;padding:8px 16px;cursor:pointer;color:var(--mint)}
+.copy:hover{border-color:var(--mint)}
+.linkish{font-size:14px;color:var(--dim);background:none;border:0;cursor:pointer;text-decoration:underline;text-underline-offset:3px;padding:0}
+
+/* timer */
+.timer-wrap{display:grid;grid-template-columns:370px 1fr;gap:28px;align-items:start}
+.panel{position:sticky;top:calc(env(safe-area-inset-top,0px) + 84px);background:var(--card);border:1px solid var(--line);border-radius:26px;padding:26px}
+.clock{font-family:var(--mono);font-size:72px;line-height:1;letter-spacing:-.02em;margin:10px 0 4px;font-variant-numeric:tabular-nums}
+.clock.over{color:var(--pink)}
+.of{font-family:var(--mono);color:var(--dim);font-size:14px;letter-spacing:.1em}
+.bar{position:relative;height:10px;border-radius:999px;background:var(--line-soft);margin:20px 0 34px}
+.bar-fill{position:absolute;inset:0 auto 0 0;border-radius:999px;background:linear-gradient(90deg,var(--lav),var(--mint))}
+.tickmark{position:absolute;top:-3px;width:1px;height:16px;background:var(--line)}
+.soft{position:absolute;top:-8px;width:2px;height:26px;background:var(--gold)}
+.soft span{position:absolute;top:28px;right:-4px;font-family:var(--mono);font-size:11px;color:var(--gold);white-space:nowrap;letter-spacing:.08em}
+.controls{display:flex;gap:10px;flex-wrap:wrap}
+.ctl{font-weight:500;font-size:16px;border-radius:999px;padding:12px 22px;cursor:pointer;border:1px solid var(--line);background:transparent}
+.ctl.go{background:#ece7f6;color:#14112a;border-color:#ece7f6}
+.now{margin-top:24px;padding-top:22px;border-top:1px solid var(--line-soft)}
+.now h4{font-size:24px;font-weight:600;margin:8px 0 2px;line-height:1.25}
+.now .left{font-family:var(--mono);font-size:13px;color:var(--dim);letter-spacing:.08em}
+.now .say{font-size:21px;margin:14px 0 0}
+.stages{display:flex;flex-direction:column;gap:12px}
+.stage{border:1px solid var(--line);border-radius:20px;background:var(--card);transition:border-color .2s}
+.stage.cur{border-color:var(--mint);box-shadow:inset 0 0 0 1px var(--mint)}
+.stage-head{width:100%;display:grid;grid-template-columns:128px 1fr auto;gap:14px;align-items:center;background:none;border:0;padding:18px 22px;cursor:pointer;text-align:left}
+.stage-time{font-family:var(--mono);font-size:14px;color:var(--dim);font-variant-numeric:tabular-nums}
+.stage.cur .stage-time{color:var(--mint)}
+.stage-title{font-size:19px;font-weight:600}
+.stage.past .stage-title{color:var(--dim)}
+.chev{font-family:var(--mono);color:var(--dim);font-size:18px}
+.stage-body{padding:0 22px 22px 164px}
+.stage-body .goal{color:var(--muted);margin:0 0 6px;font-size:17px}
+.lines{margin:12px 0 0;padding:0;list-style:none}
+.lines li{font-family:var(--serif);font-style:italic;font-weight:500;font-size:21px;line-height:1.45;padding:10px 0 10px 18px;border-left:2px solid var(--lav);margin-bottom:10px}
+.lines li.dir{font-family:var(--sans);font-style:normal;font-weight:400;font-size:15px;color:var(--dim);border-left-color:var(--line)}
+.avoid{margin:12px 0 0;color:var(--pink);font-size:15px}
+.avoid b{font-weight:600}
+.follow{margin-top:14px;font-size:14px;color:var(--mint);background:none;border:0;cursor:pointer;padding:0;text-decoration:underline;text-underline-offset:3px;align-self:flex-start}
+
+/* tracker */
+.logs{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:28px}
+.log{border-radius:18px;border:1px solid var(--line);background:var(--card);padding:16px 20px;cursor:pointer;text-align:left;min-width:200px;flex:1}
+.log:hover{border-color:var(--lav)}
+.log b{display:block;font-weight:600;font-size:17px}
+.log span{color:var(--dim);font-size:14px}
+.log.win{border-color:rgba(127,223,195,.5)}
+.counters{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+.counter{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:20px}
+.counter .v{font-family:var(--mono);font-size:44px;line-height:1.1;margin:8px 0 12px;font-variant-numeric:tabular-nums}
+.counter input{width:100%;font-family:var(--mono);font-size:40px;background:transparent;border:0;border-bottom:1px dashed var(--line);color:var(--text);padding:0 0 4px;margin:8px 0 12px}
+.pm{display:flex;gap:8px}
+.pm button{flex:1;border:1px solid var(--line);background:transparent;border-radius:999px;padding:6px 0;cursor:pointer;font-family:var(--mono)}
+.stats{display:grid;grid-template-columns:1.3fr 1fr 1fr;gap:14px;margin-top:14px}
+.stat{background:var(--card-2);border:1px solid var(--line);border-radius:20px;padding:22px}
+.stat .v{font-family:var(--mono);font-size:34px;margin:8px 0 4px;font-variant-numeric:tabular-nums}
+.stat p{margin:0;color:var(--dim);font-size:14px}
+.meter{position:relative;height:8px;border-radius:999px;background:var(--line-soft);margin:14px 0 26px}
+.meter i{position:absolute;inset:0 auto 0 0;border-radius:999px}
+.meter .mark{position:absolute;top:-5px;width:2px;height:18px;background:var(--gold)}
+.meter .mark span{position:absolute;top:20px;left:50%;transform:translateX(-50%);font-family:var(--mono);font-size:11px;color:var(--gold);white-space:nowrap}
+.reset{margin-top:22px}
+
+/* forward */
+.block{margin-top:44px}
+.block h3{font-size:28px;font-weight:600;letter-spacing:-.02em;margin:10px 0 10px;line-height:1.2}
+.block > p{color:var(--muted);font-size:18px;max-width:64ch;margin:0 0 18px}
+.goal-line{font-family:var(--serif);font-style:italic;font-weight:500;font-size:clamp(24px,2.8vw,32px);color:var(--gold);line-height:1.35;margin:10px 0 0;max-width:40ch}
+.doors{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.door{background:var(--card);border:1px solid var(--line);border-radius:22px;padding:24px}
+.door h4{font-size:21px;font-weight:600;margin:6px 0 6px}
+.door p{margin:0;color:var(--muted)}
+.flow{list-style:none;margin:0;padding:0;border:1px solid var(--line);border-radius:22px;overflow:hidden}
+.flow li{display:grid;grid-template-columns:130px 1fr;gap:18px;padding:16px 22px;border-top:1px solid var(--line-soft);background:var(--card)}
+.flow li:first-child{border-top:0}
+.flow .tm{font-family:var(--mono);font-size:14px;color:var(--mint);padding-top:2px;font-variant-numeric:tabular-nums}
+.flow b{font-weight:600;display:block}
+.flow span{color:var(--muted);font-size:16px}
+.qs{margin:0;padding:0;list-style:none;counter-reset:q}
+.qs li{counter-increment:q;display:grid;grid-template-columns:44px 1fr;gap:10px;padding:14px 0;border-top:1px solid var(--line-soft);font-size:18px}
+.qs li::before{content:counter(q,decimal-leading-zero);font-family:var(--mono);color:var(--dim);font-size:14px;padding-top:4px}
+.qs em{color:var(--dim);font-style:normal;font-size:15px;display:block}
+.help{margin-top:56px;border:1px solid var(--line);border-radius:28px;padding:34px 36px;background:linear-gradient(140deg,rgba(184,155,240,.14),rgba(28,26,47,.8) 55%,rgba(127,223,195,.08))}
+.help h3{font-size:28px;font-weight:600;letter-spacing:-.02em;margin:10px 0 10px;line-height:1.2}
+.help p{color:var(--muted);max-width:60ch;margin:0 0 22px}
+.signoff{margin-top:56px;font-family:var(--serif);font-style:italic;font-weight:500;font-size:32px;color:var(--gold)}
+
+@media (max-width:980px){
+  .hero{grid-template-columns:1fr;gap:44px;padding:28px 22px 48px}
+  .timer-wrap,.setup{grid-template-columns:1fr}
+  .panel,.preview{position:relative;top:0}
+  .counters{grid-template-columns:1fr 1fr}
+  .stats{grid-template-columns:1fr}
+}
+@media (max-width:720px){
+  .main{padding:40px 20px 90px}
+  .cols,.scripts,.doors,.row2{grid-template-columns:1fr}
+  .w1,.w2,.w3,.w4{width:100%}
+  .stage-card{padding:18px 22px}
+  .stage-head{grid-template-columns:1fr auto;padding:16px 18px}
+  .stage-time{grid-column:1/-1}
+  .stage-body{padding:0 18px 20px}
+  .flow li{grid-template-columns:1fr;gap:4px}
+  .clock{font-size:60px}
+  .nav-in{padding:10px 14px}
+  .callout,.help{padding:26px 22px}
+}
+@media (prefers-reduced-motion: reduce){ *{transition:none!important;scroll-behavior:auto!important} }
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/htm@3.1.1/dist/htm.umd.js"></script>
+<script>
+const { useState, useEffect, useRef } = React;
+const html = htm.bind(React.createElement);
+
+const AUDIT_LINK = "https://cal.com/amanda-fielding-smith-ljdz7y/strategy-audit-open";
+
+const store = {
+  get(k, d){ try{ const v = localStorage.getItem('ask-playbook:'+k); return v == null ? d : JSON.parse(v); }catch(e){ return d; } },
+  set(k, v){ try{ localStorage.setItem('ask-playbook:'+k, JSON.stringify(v)); }catch(e){} }
+};
+const reduceMotion = () => { try{ return window.matchMedia('(prefers-reduced-motion: reduce)').matches; }catch(e){ return false; } };
+
+/* ---------- the offer: an example until they replace it ---------- */
+const EXAMPLE = {
+  name: "The Soul Path Mentorship",
+  price: 1500,
+  billing: "once",
+  length: "three months",
+  format: "one-on-one",
+  covers: "We get clear on what you're here to do, clear what's in the way, and build a practice you trust.",
+  start: "next week",
+  session: "reading",
+  edited: false
+};
+
+const money = (n) => '$' + (Number(n) || 0).toLocaleString('en-US');
+const sentence = (s) => { s = (s || '').trim(); return !s ? '' : /[.!?]$/.test(s) ? s : s + '.'; };
+const cap = (s) => s ? s.charAt(0).toUpperCase() + s.slice(1) : s;
+const priceWords = (c) => c.billing === 'monthly' ? money(c.price) + ' a month' : 'a one-time investment of ' + money(c.price);
+const priceShort = (c) => money(c.price) + (c.billing === 'monthly' ? ' a month' : '');
+
+function lines(c){
+  const S = (c.session || 'session').trim().toLowerCase();
+  const name = (c.name || 'my program').trim();
+  return {
+    S, name,
+    ASK: "I know we covered a lot today. Do you want to keep figuring this out on your own, or would you like some help with it?",
+    OFFER: name + " is " + c.length + " working together " + c.format + ". " + sentence(c.covers) + " It's " + priceWords(c) + ", and we can get your first session scheduled as early as " + c.start + ".",
+    BRIDGE: "That's such a good question, and it's exactly what " + name + " is built for. Can I tell you how it works?",
+    YES: "Amazing. I'm sending you the link right now. Stay on with me while you check out, and we'll book your first session before we hang up."
+  };
+}
+
+function scripts(c){
+  const L = lines(c);
+  return [
+    { when: "End of every call", say: L.ASK, note: "Goal: 8 out of 10 people hear this sentence." },
+    { when: "They ask what to read, do, or practice", say: L.BRIDGE, note: "That question is a raised hand. One tip max, never the whole roadmap first." },
+    { when: "The offer", say: L.OFFER, note: "Say it once, clearly. Then stop talking and let them answer." },
+    { when: "They say yes", say: L.YES, note: "Stay on while they pay. Book the first session before you hang up." },
+    { when: "Instead of apologizing", say: "I'm going to share everything that came through. Some of it may be symbolic, so take what resonates.", note: "No more \"I'm new,\" \"sorry if this isn't landing,\" or \"I know this sounds woo woo.\"" },
+    { when: "\"I need to think about it\"", say: "Of course. What specifically do you want to think through? Let's look at it together while we're here.", note: "There's usually one real question underneath. Find it." },
+    { when: "\"I can't afford it right now\"", say: "I totally hear you. Can I ask, if money weren't a factor, is this something you'd want to do?", note: "If yes, it's a timing question, not a fit question. Ask when it would make sense to start." },
+    { when: "\"I need to talk to my partner\"", say: "I love that. What do you think they'll ask? Let's book ten minutes for right after you talk, so you're not left sitting on it.", note: "Get the follow-up on the calendar before you hang up." },
+    { when: "They want a free " + L.S + " on a clarity call", say: "I love that you want that. The " + L.S + "s are where we go deep inside the program. Today is about getting clear on what's going on and whether I can help.", note: "No free " + L.S + "s on clarity calls. The " + L.S + " is what they're buying." },
+    { when: "Following up after a past " + L.S, say: "Hi [name]! I've been thinking about your " + L.S + ". You asked about [their question], and that's exactly what " + L.name + " is built for. Want to hop on a quick call to talk about going deeper?", note: "Send this to everyone you've worked with in the last 30 days. A personal message, not a link dump." }
+  ];
+}
+
+const m = (x) => x * 60;
+
+function clarityStages(c){
+  const L = lines(c);
+  return [
+    { start: 0, end: 60, title: "Rapport", goal: "Warm and quick. Get to the point.", say: ["Can you see me okay? Can you hear me okay? Great. I'm looking over your application, but I'd love to hear it from you."] },
+    { start: 60, end: m(5), title: "The problem", goal: "Let them talk. Go one question deeper on whatever they say before moving on.", say: ["What specifically is going on right now that made you want to book this call?", "How long has this been going on?", "What have you already tried?"], avoid: "Doing a mini " + L.S + ". That's why these run long." },
+    { start: m(5), end: m(8), title: "The cost", goal: "Let them feel it. Don't rush to fix it.", say: ["How does it feel to be in this situation?", "What's it costing you to not have this clarity?"] },
+    { start: m(8), end: m(11), title: "The vision", goal: "Write down their exact words. You'll say them back.", say: ["Tell me your vision for the next 6 to 12 months. If this was solved, what would be different?"] },
+    { start: m(11), end: m(12), title: "The ask", goal: "Ask by minute 12, so it happens even if they have to leave at 15.", say: ["Okay, great. That's definitely something I can help you with. Do you want to keep figuring this out on your own, or would you like to hear what it would be like to work together?"] },
+    { start: m(12), end: m(17), title: "The offer", goal: "Say the price once, clearly. Handle one objection (see What to say).", say: [L.OFFER, "(Stop talking. Let them answer.)"], avoid: "\"No pressure.\" \"I'll send you some info.\"" },
+    { start: m(17), end: m(20), title: "The close", goal: "Yes or not yet. Hard stop at 20:00.", say: ["Yes: " + L.YES, "Not yet: Totally okay. Thank you for being so open with me today."] }
+  ];
+}
+
+function sessionStages(c){
+  const L = lines(c);
+  return [
+    { start: 0, end: m(5), title: "Welcome", goal: "Set expectations with confidence.", say: ["I'm so glad you're here. Here's how today works: we'll talk for a few minutes, I'll do the " + L.S + ", and then I'll share everything that came through. Some of it may be symbolic, so take what resonates."], avoid: "Apologizing for being new, being woo woo, or not getting it right." },
+    { start: m(5), end: m(12), title: "Intake", goal: "Get the problem and the vision. You need both for the ask.", say: ["If today did exactly what you hoped, what would you walk away clear on?", "Is there a question you've been nervous to ask out loud?", "And if six to twelve months from now this all felt resolved, what would be different?"], avoid: "Skipping the vision question. It's your bridge at minute 77, so write their answer down." },
+    { start: m(12), end: m(22), title: "Your opening", goal: "Your grounding, prayer or ritual. Keep it exactly the way you do it.", say: ["(Your opening, your way.)"] },
+    { start: m(22), end: m(42), title: "The " + L.S, goal: "Hard cap at 20 minutes. Set a quiet alarm before you start.", say: ["(The work itself.)"], avoid: "Going past 42:00. Every extra minute here comes out of the ask." },
+    { start: m(42), end: m(47), title: "Return", goal: "Bring them back and let them share first.", say: ["How are you feeling? Is there anything you want to share before I get into what I got for you?"] },
+    { start: m(47), end: m(70), title: "Deliver the " + L.S, goal: "Tie every piece back to what they asked for at the start.", say: ["You asked about [their question]. Here's what came through."], avoid: "Long background teaching. Two minutes max. The follow-up email can go deeper." },
+    { start: m(70), end: m(77), title: "Their questions", goal: "When they ask what to do next, that's a raised hand. Bridge, don't hand over the roadmap.", say: [L.BRIDGE], avoid: "Giving the full five-minute plan for free. One tip, max." },
+    { start: m(77), end: m(87), title: "Bridge, ask, offer", goal: "Use their vision from the intake. Then ask. Then stop talking.", say: ["I know we covered a lot today. At the start you told me you wanted [their vision]. Do you want to keep figuring this out on your own, or would you like some help with it?", L.OFFER, "(Stop talking. Let them answer.)"], avoid: "\"No pressure.\" \"I'll send you some links.\"" },
+    { start: m(87), end: m(90), title: "Close", goal: "Get the decision on the call.", say: ["Yes: " + L.YES, "Not yet: Totally okay. Thank you for trusting me with this today."] }
+  ];
+}
+
+function auditStages(c){
+  const L = lines(c);
+  return [
+    { start: 0, end: m(5), title: "Welcome", goal: "You read their intake before the call. Say so. Confident expectations, no apologies.", say: ["I went through everything you sent me before we got on, so I already have a picture. I'd love to hear it from you first."] },
+    { start: m(5), end: m(15), title: "Problem and cost", goal: "What's going on, how long, what they've tried, what it's costing them.", say: ["What's going on right now that made you want to book this?", "What have you already tried?", "What's it costing you to stay where you are?"] },
+    { start: m(15), end: m(20), title: "The vision", goal: "Write down their exact words. You'll say them back at minute 45.", say: ["Where do you want to be 6 to 12 months from now?"] },
+    { start: m(20), end: m(25), title: "The three things", goal: "Name three. Let them choose one. They pick what matters most and you stay on time.", say: ["Based on everything you sent me, these are the three things I'd focus on: [one], [two], [three]. Which one do you want to dive into right now?"], avoid: "Picking for them." },
+    { start: m(25), end: m(45), title: "Work one through", goal: "Solve the one they chose, completely. Point them to a resource for the other two.", say: ["(Finish one thing on the call. Write down the resource you'll send for the other two.)"], avoid: "Starting all three. One thing finished beats three things half done." },
+    { start: m(45), end: m(55), title: "Ask and offer", goal: "The ask, the offer, then silence. Handle one objection.", say: ["I know we covered a lot. At the start you told me you wanted [their vision]. Do you want to do this all by yourself, or do you want to hear what it would be like to work together?", L.OFFER, "(Stop talking. Let them answer.)"], avoid: "\"No pressure.\" \"I'll send you the details.\"" },
+    { start: m(55), end: m(60), title: "Close", goal: "Link sent and first session booked, or a kind not yet.", say: ["Yes: " + L.YES, "Not yet: Totally okay. You'll have your written plan from me either way."] }
+  ];
+}
+
+const LEAKS = [
+  { h: "I mentioned the offer. I never asked.", p: "\"No pressure, that's also something I offer\" isn't an ask. No price, no question, no decision. \"I'll look into it\" is a maybe, and a maybe held is a no that costs money.", fix: "Say the ask at the end of every call, word for word, until it's yours." },
+  { h: "I gave the roadmap away for free.", p: "When they ask \"is there anything you recommend I read or practice?\", they're raising their hand. If you answer with the full plan, you've solved the problem before the offer ever came up.", fix: "One tip, then the bridge line. The roadmap lives inside the program." },
+  { h: "I apologized for my gift.", p: "\"Sorry if this isn't landing.\" \"I'm still new at this.\" \"I know this sounds woo woo.\" Every apology tells them to believe you a little less.", fix: "Swap every apology for the \"take what resonates\" line." },
+  { h: "The ask came after time was up.", p: "If the work runs long, the ask gets squeezed into the minutes when they're already reaching for the door. The ask needs its own protected ten minutes.", fix: "Run the timer. Cap the work. The gold marker is when the ask starts." },
+  { h: "The call ended with \"I'll send you the link.\"", p: "That's where sales go to die. Get the decision on the call. Yes and no are both fine answers. Maybe isn't.", fix: "Send the link while they're still on, and stay on while they check out." }
+];
+
+const KEEPS = [
+  { h: "I asked what they hoped to leave with.", p: html`<span className="q">"If today did exactly what you hoped, what would you walk away clear on?"</span> Discovery that good belongs on every call.` },
+  { h: "I got the real problem in the first five minutes.", p: "Stuck, lost, wanting to understand their gifts. When they tell you that, they're telling you exactly what they'd pay to solve." },
+  { h: "I delivered proof.", p: "One specific detail that lands sends belief through the roof, and belief is the hardest thing to sell." },
+  { h: "I made them feel safe.", p: "Consent and clear expectations before you go in. Safe is what makes a yes possible." }
+];
+
+function fmt(s){
+  const neg = s < 0; s = Math.abs(Math.floor(s));
+  const mm = Math.floor(s / 60), ss = s % 60;
+  return (neg ? '-' : '') + String(mm).padStart(2,'0') + ':' + String(ss).padStart(2,'0');
+}
+
+function CopyBtn({ text }){
+  const [ok, setOk] = useState(false);
+  const done = () => { setOk(true); setTimeout(() => setOk(false), 1600); };
+  const copy = async () => {
+    try { await navigator.clipboard.writeText(text); done(); }
+    catch(e){
+      try { const ta = document.createElement('textarea'); ta.value = text; document.body.appendChild(ta); ta.select(); document.execCommand('copy'); ta.remove(); done(); } catch(_){}
+    }
+  };
+  return html`<button className="copy" onClick=${copy}>${ok ? 'Copied' : 'Copy'}</button>`;
+}
+
+function Lines({ say }){
+  return html`<ul className="lines">${say.map((l, i) => html`<li key=${i} className=${l.startsWith('(') ? 'dir' : ''}>${l}</li>`)}</ul>`;
+}
+
+function Setup({ c, setC, go }){
+  const L = lines(c);
+  const set = (k, v) => setC(p => ({ ...p, [k]: v, edited: true }));
+  const text = (k, label, hint, ph) => html`
+    <label className="field" htmlFor=${'f-' + k}>
+      <span className="label dim">${label}</span>
+      <input id=${'f-' + k} type="text" value=${c[k]} placeholder=${ph || ''} onChange=${e => set(k, e.target.value)} />
+      ${hint ? html`<small>${hint}</small>` : null}
+    </label>`;
+  return html`
+    <div className="setup">
+      <div className="form">
+        ${text('name', 'What your offer is called', 'The program every call leads to. One offer, not a menu.')}
+        <div className="row2">
+          <label className="field" htmlFor="f-price">
+            <span className="label dim">Price</span>
+            <input id="f-price" type="number" min="0" inputMode="numeric" value=${c.price} onChange=${e => set('price', Math.max(0, parseInt(e.target.value || '0', 10) || 0))} />
+          </label>
+          <label className="field" htmlFor="f-billing">
+            <span className="label dim">Paid</span>
+            <select id="f-billing" value=${c.billing} onChange=${e => set('billing', e.target.value)}>
+              <option value="once">One time</option>
+              <option value="monthly">Every month</option>
+            </select>
+          </label>
+        </div>
+        <div className="row2">
+          ${text('length', 'How long', '', 'three months')}
+          ${text('format', 'How you work together', '', 'one-on-one')}
+        </div>
+        <label className="field" htmlFor="f-covers">
+          <span className="label dim">What you do together, in one sentence</span>
+          <textarea id="f-covers" value=${c.covers} onChange=${e => set('covers', e.target.value)}></textarea>
+          <small>Start with "We". Say what changes for them, in words a client has actually used.</small>
+        </label>
+        <div className="row2">
+          ${text('start', 'Soonest they can start', '', 'next week')}
+          ${text('session', 'What you call your paid session', 'reading, session, healing, chart', 'reading')}
+        </div>
+      </div>
+      <aside className="preview">
+        <span className=${'badge' + (c.edited ? ' ok' : '')}>${c.edited ? 'Your offer' : 'Example offer · replace it with yours'}</span>
+        <p className="label pink">How you'll say it on the call</p>
+        <p className="say">"${L.OFFER}"</p>
+        <p className="note">Read it out loud once. If you run out of breath, shorten the middle sentence.</p>
+        <div className="facts">
+          <span>Every script, timer and target now uses <b>${L.name}</b> at <b>${priceShort(c)}</b>.</span>
+        </div>
+        <div className="row-btns">
+          <button className="ctl go" onClick=${() => go('leaks')}>Next: score your last call</button>
+          <button className="linkish" onClick=${() => setC({ ...EXAMPLE })}>Reset to the example</button>
+        </div>
+      </aside>
+    </div>`;
+}
+
+function Score({ s, setS, c }){
+  const L = lines(c);
+  const flip = (k) => setS(p => ({ ...p, [k]: !p[k] }));
+  const leaks = LEAKS.filter((_, i) => s['l' + i]);
+  const first = LEAKS.find((_, i) => s['l' + i]);
+  return html`
+    <div>
+      <p className="receipt"><b>Where this came from.</b> One of my 1:1 clients did 17 paid ${L.S}s in a month and enrolled zero people into her program. Her gift wasn't the problem. One sentence was missing from the end of every call.</p>
+      <div className="cols">
+        <div>
+          <p className="label pink">Tick what happened on your last call</p>
+          ${LEAKS.map((w, i) => html`
+            <button key=${i} className="tick leak" aria-pressed=${!!s['l' + i]} onClick=${() => flip('l' + i)}>
+              <span className="box" aria-hidden="true"></span>
+              <span><h3>${w.h}</h3><p>${w.p}</p></span>
+            </button>`)}
+        </div>
+        <div>
+          <p className="label mint">Tick what you already do well</p>
+          ${KEEPS.map((w, i) => html`
+            <button key=${i} className="tick keep" aria-pressed=${!!s['k' + i]} onClick=${() => flip('k' + i)}>
+              <span className="box" aria-hidden="true"></span>
+              <span><h3>${w.h}</h3><p>${w.p}</p></span>
+            </button>`)}
+          <div className="verdict">
+            <p className="label gold">Your last call</p>
+            <div className="v">${leaks.length} of 5 leaks</div>
+            <p>${first ? 'Fix this one first: ' + first.fix : 'Nothing ticked yet. Be honest. This is the list we fix.'}</p>
+          </div>
+        </div>
+      </div>
+      <div className="callout">
+        <p className="label gold">The one thing</p>
+        <p className="big">"${L.ASK}"</p>
+        <p>Say this at the end of every call. Every one. If you ask on 8 of your next 10 calls and 2 say yes, that's ${money(2 * c.price)}${c.billing === 'monthly' ? ' a month' : ''} from calls you're already doing.</p>
+      </div>
+    </div>`;
+}
+
+function CallTimer({ stages, total, softStop, softLabel }){
+  const [elapsed, setElapsed] = useState(0);
+  const [running, setRunning] = useState(false);
+  const [open, setOpen] = useState(0);
+  const [follow, setFollow] = useState(true);
+  const base = useRef(0);
+
+  useEffect(() => {
+    if (!running) return;
+    base.current = Date.now() - elapsed * 1000;
+    const t = setInterval(() => setElapsed((Date.now() - base.current) / 1000), 250);
+    return () => clearInterval(t);
+  }, [running]);
+
+  let cur = stages.findIndex(s => elapsed >= s.start && elapsed < s.end);
+  if (cur === -1) cur = stages.length - 1;
+  const over = elapsed >= total;
+
+  useEffect(() => { if (follow && running) setOpen(cur); }, [cur, follow, running]);
+
+  const reset = () => { setRunning(false); setElapsed(0); setOpen(0); setFollow(true); };
+  const pct = Math.min(elapsed / total, 1) * 100;
+  const st = stages[cur];
+  const firstLine = st.say.find(l => !l.startsWith('('));
+
+  return html`
+    <div className="timer-wrap">
+      <aside className="panel">
+        <p className="label mint">${running ? 'Live' : elapsed > 0 ? 'Paused' : 'Ready when they join'}</p>
+        <div className=${'clock' + (over ? ' over' : '')}>${fmt(elapsed)}</div>
+        <div className="of">OF ${fmt(total)}${over ? ' · WRAP UP NOW' : ''}</div>
+        <div className="bar" aria-hidden="true">
+          <div className="bar-fill" style=${{ width: pct + '%' }}></div>
+          ${stages.slice(1).map((s, i) => html`<div key=${i} className="tickmark" style=${{ left: (s.start / total * 100) + '%' }}></div>`)}
+          ${softStop ? html`<div className="soft" style=${{ left: (softStop / total * 100) + '%' }}><span>${softLabel}</span></div>` : null}
+        </div>
+        <div className="controls">
+          <button className="ctl go" onClick=${() => setRunning(r => !r)}>${running ? 'Pause' : elapsed > 0 ? 'Resume' : 'Start call'}</button>
+          <button className="ctl" onClick=${reset}>Reset</button>
+        </div>
+        <div className="now">
+          <p className="label dim">Right now</p>
+          <h4>${st.title}</h4>
+          <div className="left">${over ? 'Over time' : fmt(st.end - elapsed) + ' left in this part'}</div>
+          ${firstLine ? html`<p className="say">${firstLine}</p>` : null}
+        </div>
+      </aside>
+      <div className="stages">
+        ${stages.map((s, i) => {
+          const isOpen = open === i;
+          const cls = 'stage' + (i === cur && (running || elapsed > 0) ? ' cur' : '') + (elapsed >= s.end && !over ? ' past' : '');
+          return html`
+            <div key=${i} className=${cls}>
+              <button className="stage-head" aria-expanded=${isOpen} onClick=${() => { setFollow(false); setOpen(isOpen ? -1 : i); }}>
+                <span className="stage-time">${fmt(s.start)}–${fmt(s.end)}</span>
+                <span className="stage-title">${s.title}</span>
+                <span className="chev">${isOpen ? '−' : '+'}</span>
+              </button>
+              ${isOpen ? html`
+                <div className="stage-body">
+                  <p className="goal">${s.goal}</p>
+                  <${Lines} say=${s.say} />
+                  ${s.avoid ? html`<p className="avoid"><b>Skip:</b> ${s.avoid}</p>` : null}
+                </div>` : null}
+            </div>`;
+        })}
+        ${!follow ? html`<button className="follow" onClick=${() => { setFollow(true); setOpen(cur); }}>Follow the clock again</button>` : null}
+      </div>
+    </div>`;
+}
+
+function Tracker({ t, setT, c }){
+  const [armed, setArmed] = useState(false);
+  const bump = (k, d) => setT(p => ({ ...p, [k]: Math.max(0, (p[k] || 0) + d) }));
+  const log = (asked, enrolled) => setT(p => ({ ...p, done: p.done + 1, asked: p.asked + (asked ? 1 : 0), enrolled: p.enrolled + (enrolled ? 1 : 0) }));
+  const askRate = t.done ? t.asked / t.done : 0;
+  const enrollRate = t.done ? t.enrolled / t.done : 0;
+  const low = Math.round(t.booked * 0.2), high = Math.round(t.booked * 0.3);
+  const counter = (k, label) => html`
+    <div className="counter">
+      <p className="label dim">${label}</p>
+      <div className="v">${t[k]}</div>
+      <div className="pm"><button aria-label=${'Remove one ' + label} onClick=${() => bump(k, -1)}>−</button><button aria-label=${'Add one ' + label} onClick=${() => bump(k, 1)}>+</button></div>
+    </div>`;
+  return html`
+    <div>
+      <div className="logs">
+        <button className="log" onClick=${() => log(false, false)}><b>Call done, didn't ask</b><span>Be honest. This is the number we're fixing.</span></button>
+        <button className="log" onClick=${() => log(true, false)}><b>Call done, asked</b><span>They said not yet. You still did the job.</span></button>
+        <button className="log win" onClick=${() => log(true, true)}><b>Call done, enrolled</b><span>Yes! Book their first session.</span></button>
+      </div>
+      <div className="counters">
+        <div className="counter">
+          <label className="label dim" htmlFor="t-booked">Calls booked</label>
+          <input id="t-booked" type="number" min="0" inputMode="numeric" value=${t.booked} onChange=${e => setT(p => ({ ...p, booked: Math.max(0, parseInt(e.target.value || '0', 10) || 0) }))} />
+          <p className="note" style=${{ margin: 0 }}>Edit to match your calendar</p>
+        </div>
+        ${counter('done', 'Calls done')}
+        ${counter('asked', 'Asked')}
+        ${counter('enrolled', 'Enrolled')}
+      </div>
+      <div className="stats">
+        <div className="stat">
+          <p className="label gold">Ask rate</p>
+          <div className="v">${Math.round(askRate * 100)}%</div>
+          <div className="meter"><i style=${{ width: Math.min(askRate, 1) * 100 + '%', background: askRate >= .8 ? 'var(--mint)' : 'var(--gold)' }}></i><div className="mark" style=${{ left: '80%' }}><span>80% target</span></div></div>
+          <p>${t.asked} of ${t.done} calls ended with the ask.</p>
+        </div>
+        <div className="stat">
+          <p className="label gold">Enrolled</p>
+          <div className="v">${t.enrolled} <span style=${{ fontSize: '18px', color: 'var(--dim)' }}>/ ${low}–${high}</span></div>
+          <p>${Math.round(enrollRate * 100)}% of calls done. Goal: 20–30% of ${t.booked} booked.</p>
+        </div>
+        <div className="stat">
+          <p className="label gold">${c.billing === 'monthly' ? 'New monthly revenue' : 'Revenue'}</p>
+          <div className="v">${money(t.enrolled * c.price)}</div>
+          <p>Goal range: ${money(low * c.price)}–${money(high * c.price)}</p>
+        </div>
+      </div>
+      <button className="linkish reset" onClick=${() => { if (armed) { setT({ booked: t.booked, done: 0, asked: 0, enrolled: 0 }); setArmed(false); } else { setArmed(true); setTimeout(() => setArmed(false), 3000); } }}>${armed ? 'Tap again to clear the counts' : 'Clear the counts'}</button>
+    </div>`;
+}
+
+const TABS = [
+  ['setup', 'Your offer'], ['leaks', 'Score your last call'], ['scripts', 'What to say'],
+  ['clarity', 'Clarity call'], ['session', 'Paid session'], ['audit', 'Audit call'],
+  ['tracker', 'Tracker'], ['forward', 'Going forward']
+];
+
+function App(){
+  const [tab, setTab] = useState(() => store.get('tab', 'setup'));
+  const [c, setC] = useState(() => ({ ...EXAMPLE, ...store.get('offer', {}) }));
+  const [s, setS] = useState(() => store.get('score', {}));
+  const [t, setT] = useState(() => store.get('tracker', { booked: 10, done: 0, asked: 0, enrolled: 0 }));
+  useEffect(() => store.set('tab', tab), [tab]);
+  useEffect(() => store.set('offer', c), [c]);
+  useEffect(() => store.set('score', s), [s]);
+  useEffect(() => store.set('tracker', t), [t]);
+
+  const go = (id) => {
+    setTab(id);
+    requestAnimationFrame(() => { const el = document.getElementById('content'); if (el) el.scrollIntoView({ behavior: reduceMotion() ? 'auto' : 'smooth', block: 'start' }); });
+  };
+  const L = lines(c);
+  const low = Math.round(t.booked * 0.2), high = Math.round(t.booked * 0.3);
+
+  const hero = [
+    { id: 'setup', n: '01', t: 'Your offer', tag: 'Start here', w: 'w1' },
+    { id: 'clarity', n: '02', t: 'Clarity call', tag: '20 min', w: 'w2' },
+    { id: 'session', n: '03', t: 'Paid ' + L.S, tag: '90 min', w: 'w3' },
+    { id: 'audit', n: '04', t: 'Audit call', tag: '60 min', w: 'w4' }
+  ];
+
+  return html`
+    <header className="hero">
+      <div>
+        <p className="eyebrow">Spiritual Business Skool · Call playbook</p>
+        <h1>Every Call<br/>Ends With<span className="script">the Ask.</span></h1>
+        <p className="tagline">Eight out of ten. Every single time.</p>
+        <p className="lede">The call flow I build with my 1:1 clients. Put your offer in once, and every script, timer and target fills in with your words. Keep this open on your screen during calls.</p>
+        <p className="sig"><b>Amanda Fielding-Smith</b> · Spiritual Business Skool</p>
+        <div className="btns">
+          <button className="btn btn-primary" onClick=${() => go('setup')}>Set up your offer</button>
+          <button className="btn btn-ghost" onClick=${() => go('scripts')}>Open the scripts</button>
+        </div>
+      </div>
+      <nav className="stack" aria-label="Jump to a section">
+        <p className="stack-label">Every call</p>
+        ${hero.map(h => html`
+          <button key=${h.id} className=${'stage-card ' + h.w} onClick=${() => go(h.id)}>
+            <span><span className="n">${h.n}</span><span className="t">${h.t}</span></span>
+            <span className="tag">${h.tag}</span>
+          </button>`)}
+        <div className="connector"></div>
+        <p className="stack-label end">${L.name}</p>
+        <p className="stack-label">Tap a card to jump in</p>
+      </nav>
+    </header>
+
+    <div className="nav" id="content">
+      <div className="nav-in" role="tablist">
+        ${TABS.map(([id, label]) => html`<button key=${id} role="tab" aria-selected=${tab === id} className=${'pill' + (tab === id ? ' on' : '')} onClick=${() => setTab(id)}>${label}</button>`)}
+      </div>
+    </div>
+
+    <main className="main">
+      <section hidden=${tab !== 'setup'}>
+        <p className="label pink">Two minutes, once</p>
+        <h2>The offer every call <span className="script">leads to.</span></h2>
+        <p className="sub">Fill this in and the whole playbook rewrites itself around your offer. It saves on this device only.</p>
+        <${Setup} c=${c} setC=${setC} go=${go} />
+      </section>
+
+      <section hidden=${tab !== 'leaks'}>
+        <p className="label pink">Before you change anything</p>
+        <h2>Score your <span className="script">last call.</span></h2>
+        <p className="sub">Think of the last ${L.S} or sales call you did. Tick what actually happened.</p>
+        <${Score} s=${s} setS=${setS} c=${c} />
+      </section>
+
+      <section hidden=${tab !== 'scripts'}>
+        <p className="label pink">Word for word</p>
+        <h2>Exactly what <span className="script">to say.</span></h2>
+        <p className="sub">Read it off the screen until it's yours. Tap copy for the follow-up messages.</p>
+        <div className="scripts">
+          ${scripts(c).map((x, i) => html`
+            <div key=${i} className="script-card">
+              <p className="label pink">${x.when}</p>
+              <p className="say">"${x.say}"</p>
+              <p className="note">${x.note}</p>
+              <${CopyBtn} text=${x.say} />
+            </div>`)}
+        </div>
+      </section>
+
+      <section hidden=${tab !== 'clarity'}>
+        <p className="label pink">Booked for 15, runs to 20</p>
+        <h2>The clarity <span className="script">call.</span></h2>
+        <p className="sub">Hit start when they join. The panel follows the clock and shows you what to say next. No free ${L.S}s on these calls. The ask happens by minute 12, every time.</p>
+        <${CallTimer} stages=${clarityStages(c)} total=${m(20)} softStop=${m(15)} softLabel="BOOKED END" />
+      </section>
+
+      <section hidden=${tab !== 'session'}>
+        <p className="label pink">90 minutes, paid</p>
+        <h2>The paid <span className="script">${L.S}.</span></h2>
+        <p className="sub">Same ${L.S} you already give. Two changes: a hard cap on the work itself, and ten protected minutes at the end for the ask.</p>
+        <${CallTimer} stages=${sessionStages(c)} total=${m(90)} softStop=${m(77)} softLabel="THE ASK" />
+      </section>
+
+      <section hidden=${tab !== 'audit'}>
+        <p className="label pink">60 minutes, paid</p>
+        <h2>The audit <span className="script">call.</span></h2>
+        <p className="sub">A paid call with real value that ends in an invitation. They fill out an intake, you review it before the call, you name three things, and you solve one of them completely.</p>
+        <${CallTimer} stages=${auditStages(c)} total=${m(60)} softStop=${m(45)} softLabel="THE ASK" />
+      </section>
+
+      <section hidden=${tab !== 'tracker'}>
+        <p className="label pink">Log it the second you hang up</p>
+        <h2>Your enrollment <span className="script">tracker.</span></h2>
+        <p className="sub">Ask at least 8 out of 10. Enroll 20–30% of the calls on your calendar. This saves on this device only.</p>
+        <${Tracker} t=${t} setT=${setT} c=${c} />
+      </section>
+
+      <section hidden=${tab !== 'forward'}>
+        <p className="label pink">The plan</p>
+        <h2>Where you go <span className="script">from here.</span></h2>
+
+        <div className="block">
+          <p className="label mint">Right now</p>
+          <h3>Make the most of the calendar</h3>
+          <p>Whatever is already booked, keep it. Every one of those calls now ends with the ask.</p>
+          <p className="goal-line">With ${t.booked} calls booked, 20–30% is ${low}–${high} new clients in ${L.name}, or ${money(low * c.price)}–${money(high * c.price)}${c.billing === 'monthly' ? ' a month' : ''}.</p>
+        </div>
+
+        <div className="block">
+          <p className="label mint">After this batch</p>
+          <h3>Retire the free 15-minute call</h3>
+          <p>Fifteen free minutes isn't enough time to sell a program at ${priceShort(c)}, and those slots eat the time you need for paid work. Once the booked ones are done, there are two ways in:</p>
+          <div className="doors">
+            <div className="door"><p className="label gold">Paid · 90 min</p><h4>The ${L.S}</h4><p>Exactly what you do now, and it always ends with the ask.</p></div>
+            <div className="door"><p className="label gold">Paid · 60 min</p><h4>The audit call</h4><p>A sales call with real value: three things named, one solved, then the invitation. Price it so only serious people book.</p></div>
+          </div>
+        </div>
+
+        <div className="block">
+          <p className="label mint">Under 5 minutes</p>
+          <h3>The pre-call video</h3>
+          <p>People watch this before they can book. It does the warming up, so the call can do the deciding.</p>
+          <ul className="flow">
+            <li><span className="tm">0:00–0:30</span><div><b>Who this is for</b><span>Name the person and the pull they feel, in their words.</span></div></li>
+            <li><span className="tm">0:30–1:30</span><div><b>Your story</b><span>What you did before, how you found this work. Real and specific.</span></div></li>
+            <li><span className="tm">1:30–3:00</span><div><b>${L.name}</b><span>What it is, what changes, who it's for.</span></div></li>
+            <li><span className="tm">3:00–4:00</span><div><b>What the call is</b><span>A conversation about working together. Not a free ${L.S}.</span></div></li>
+            <li><span className="tm">4:00–4:30</span><div><b>The investment</b><span>Say the price range so nobody's surprised on the call.</span></div></li>
+            <li><span className="tm">4:30–end</span><div><b>The invitation</b><span>If that's a yes, fill out the application below.</span></div></li>
+          </ul>
+        </div>
+
+        <div className="block">
+          <p className="label mint">The application</p>
+          <h3>Qualifying questions</h3>
+          <ol className="qs">
+            <li><div>What's going on right now that made you want to book?</div></li>
+            <li><div>How long has this been going on?</div></li>
+            <li><div>What have you already tried?</div></li>
+            <li><div>Where do you want to be 6 to 12 months from now?</div></li>
+            <li><div>${L.name} is ${c.length}, ${priceShort(c)}. If it's the right fit, are you in a position to invest?<em>Yes · Yes, with a plan · Not right now</em></div></li>
+            <li><div>Did you watch the full video?<em>Yes · No</em></div></li>
+            <li><div>Is anyone else part of this decision?</div></li>
+          </ol>
+        </div>
+
+        <div className="help">
+          <p className="label mint">Want this built around your calls?</p>
+          <h3>I'll watch one of your calls and write yours with you.</h3>
+          <p>That's a Strategy Audit. You send me a recording and your intake, I go through all of it before we talk, and you leave with your own version of this playbook.</p>
+          <a className="btn btn-primary" href=${AUDIT_LINK} target="_blank" rel="noopener">Book a Strategy Audit</a>
+        </div>
+
+        <p className="signoff">You've got this. xoxo, Amanda</p>
+      </section>
+    </main>`;
+}
+
+ReactDOM.createRoot(document.getElementById('root')).render(html`<${App} />`);
+</script>
+</body>
+</html>
