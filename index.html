@@ -211,7 +211,7 @@ h2 .script{display:inline}
 .qs li{counter-increment:q;display:grid;grid-template-columns:44px 1fr;gap:10px;padding:14px 0;border-top:1px solid var(--line-soft);font-size:18px}
 .qs li::before{content:counter(q,decimal-leading-zero);font-family:var(--mono);color:var(--dim);font-size:14px;padding-top:4px}
 .qs em{color:var(--dim);font-style:normal;font-size:15px;display:block}
-.help{margin-top:56px;border:1px solid var(--line);border-radius:28px;padding:34px 36px;background:linear-gradient(140deg,rgba(184,155,240,.14),rgba(28,26,47,.8) 55%,rgba(127,223,195,.08))}
+.help{margin-top:72px;border:1px solid var(--line);border-radius:28px;padding:34px 36px;background:linear-gradient(140deg,rgba(184,155,240,.14),rgba(28,26,47,.8) 55%,rgba(127,223,195,.08))}
 .help h3{font-size:28px;font-weight:600;letter-spacing:-.02em;margin:10px 0 10px;line-height:1.2}
 .help p{color:var(--muted);max-width:60ch;margin:0 0 22px}
 .signoff{margin-top:56px;font-family:var(--serif);font-style:italic;font-weight:500;font-size:32px;color:var(--gold)}
@@ -843,16 +843,16 @@ function App(){
             <li><div>Is anyone else part of this decision?</div></li>
           </ol>
         </div>
-
-        <div className="help">
-          <p className="label mint">Want this built around your calls?</p>
-          <h3>I'll watch one of your calls and write yours with you.</h3>
-          <p>That's a Strategy Audit. You send me a recording and your intake, I go through all of it before we talk, and you leave with your own version of this playbook.</p>
-          <a className="btn btn-primary" href=${AUDIT_LINK} target="_blank" rel="noopener">Book a Strategy Audit</a>
-        </div>
-
-        <p className="signoff">You've got this. xoxo, Amanda</p>
       </section>
+
+      <div className="help">
+        <p className="label mint">Want this built around your calls?</p>
+        <h3>I'll watch one of your calls and write yours with you.</h3>
+        <p>That's a Strategy Audit. You send me a recording and your intake, I go through all of it before we talk, and you leave with your own version of this playbook.</p>
+        <a className="btn btn-primary" href=${AUDIT_LINK} target="_blank" rel="noopener">Book a Strategy Audit</a>
+      </div>
+
+      <p className="signoff">You've got this. xoxo, Amanda</p>
     </main>`;
 }
 
